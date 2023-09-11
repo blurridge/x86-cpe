@@ -1,46 +1,51 @@
-
-; You may customize this and other start-up templates; 
-; The location of this template is c:\emu8086\inc\0_com_template.txt
-
 org 100h
-
-    LEA SI, MSG1
-    CALL SHOW_MSG
     
-    LEA SI, CRLF
+    MOV DI, 0                   ; Loads offset for display to 0
+    MOV DX, 0                   ; Loads sum container - DX to  0
+    LEA SI, MSG1                ; Loads memory address of MSG1 to source index
     CALL SHOW_MSG
-    
+    CALL ADD_NUM
+    ADD DI, 80H                 ; DI is moved by an offset of 80 to go to next line
+      
     LEA SI, MSG2
-    CALL SHOW_MSG
+    CALL SHOW_MSG 
+    CALL ADD_NUM 
+    ADD DI, 80H
+       
+    LEA SI, MSG3
+    CALL SHOW_MSG 
+    
+    ADD DL, 30h                 ; DL is added by 30h to get the ASCII value of the sum so that it could be printed
+    MOV ES:[DI], DL             ; Prints on current offset
 ret
 
-MSG1 DB 'INPUT 1ST VAL: 1', 0        
-MSG2 DB 'INPUT 2ND VAL: 2', 0 
-MSG3 DB 'SUM IS: ', 0      
-CRLF DB 0DH,0AH,0
-VAR1 DB ?
-VAR2 DB ?
-SUM DB ?  
+MSG1 DB 'INPUT 1ST VAL: 7', 0        
+MSG2 DB 'INPUT 2ND VAL: 1', 0 
+MSG3 DB 'SUM IS: ', 0
 
 SHOW_MSG:
-    PUSHA
-        CLD
-        
-        MOV AX, 0B800H
-        MOV ES, AX                 
-        MOV AX, CS
-        MOV DS, AX
-        MOV DI, 0
+    PUSH AX                     ; Stores AX to the stack 
+    PUSH SI                     ; Stores SI to the stack
+    MOV AX, 0B800H              ; Stores to AX the address of video display
+    MOV ES, AX                  ; Stores to ES the address of video display                
+    MOV AX, CS  
+    MOV DS, AX                  ; Stores CS to DS
         SHOW:
-            CMP [SI], 0
-            JZ EXIT
-            MOV AL, DS:[SI]
-            MOV ES:[DI], AL
-            INC SI
+            CMP [SI], 0         ; Compares current character to 0
+            JZ EXIT             ; If 0, exit
+            MOV AL, DS:[SI]     ; Move current character to AL
+            MOV ES:[DI], AL     ; Show current character on screen
+            MOV BL, AL          ; Store current ASCII to BL for summing
+            INC SI              ; Increment SI once since it is contiguous as a string
+            INC DI              ; DI is incremented twice since each character is 2 bytes
             INC DI
-            INC DI
-        LOOP SHOW
-        EXIT:
-        
-    POPA
-    RET                          
+        LOOP SHOW 
+    EXIT:   
+        POP SI                  ; Restores values of SI and AX
+        POP AX      
+    RET
+
+ADD_NUM:
+    SUB BL, 30h                 ; Gets actual integer value from BL by subtracting 30 hex
+    ADD DL, BL                  ; DL stores sum
+    RET                             
