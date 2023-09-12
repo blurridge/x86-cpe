@@ -32,13 +32,10 @@ SHOW_MSG:
     MOV DS, AX                  ; Stores CS to DS
         SHOW:
             CMP [SI], 0         ; Compares current character to 0
-            JZ EXIT             ; If 0, exit
-            MOV AL, DS:[SI]     ; Move current character to AL
-            MOV ES:[DI], AL     ; Show current character on screen
-            MOV BL, AL          ; Store current ASCII to BL for summing
-            INC SI              ; Increment SI once since it is contiguous as a string
-            INC DI              ; DI is incremented twice since each character is 2 bytes
-            INC DI
+            JZ EXIT             ; If 0, exit 
+            MOV BL, CS:[SI]     ; Store current ASCII to BL for summing 
+            MOVSB               ; Copy byte at DS:[SI] to ES:[DI]. Increment SI and DI.
+            INC DI              ; DI is incremented one more time since each character is 2 bytes
         LOOP SHOW 
     EXIT:   
         POP SI                  ; Restores values of SI and AX
