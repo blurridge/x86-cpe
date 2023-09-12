@@ -19,8 +19,8 @@ org 100h
     MOV ES:[DI], DL             ; Prints on current offset
 ret
 
-MSG1 DB 'INPUT 1ST VAL: 7', 0        
-MSG2 DB 'INPUT 2ND VAL: 1', 0 
+MSG1 DB 'INPUT 1ST VAL: 2', 0        
+MSG2 DB 'INPUT 2ND VAL: 7', 0 
 MSG3 DB 'SUM IS: ', 0
 
 SHOW_MSG:
