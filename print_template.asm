@@ -7,12 +7,8 @@ org 100h
     mov DI, 0           ; Initializes offset of display to 0. This makes it appear on the top-left of the screen.
     lea SI, GREETING    ; Loads GREETING's memory address to SI. SI is used since GREETING will be the source of our data. Hence the name, SOURCE INDEX.
     call DISPLAY_MSG 
-    lea SI, GREETING
-    call INVERT_MSG 
-    
-    ADD DI, 100H
-    sub SI, DX
-    call DISPLAY_MSG     
+    add DI, 160
+    call INVERT_MSG     
 
 ret
 
@@ -29,40 +25,32 @@ DISPLAY_MSG:
          jz EXIT            ; If previous cmp returns TRUE or 1, then call EXIT
          movsb              ; Macro to do ES:[DI] = DS:[SI]. We are basically transferring the current character to the display.
          inc DI             ; Since MOVSB only increments DI by 1, we need to increment it one more time since characters take up 2 bytes each.
-    LOOP SHOW
+    loop SHOW
     EXIT:
         popa                ; Returns all former values of the registers to its old value. 
         ret
 
 INVERT_MSG:
+    pusha
+    mov AX, 0B800h
+    mov ES, AX
     mov AX, CS
     mov DS, AX
-    mov CX, 0
-
-    ; Count the number of characters in the string
+    mov DL, 0
     COUNT_LOOP:
         cmp [SI], 0
-        jz REVERSE_LOOP
-        inc CX
-        inc SI
-        mov DX, CX
-        jmp COUNT_LOOP 
-
-    REVERSE_LOOP:
-        cmp CX, 0
-        jz EXIT_INVERT
-        dec SI                 ; Point SI to the previous character
-        push DS:[SI]           ; Push the character onto the stack
-        dec CX
-        jnz REVERSE_LOOP
-
-    POP_LOOP: 
-        cmp [SI], 0
-        jz EXIT_INVERT
-        pop AX
-        mov [SI], AL           ; Store the character back to its original position
-        inc SI
-    loop POP_LOOP
-
-    EXIT_INVERT:
-        ret 
+        jz RESET_CX
+        inc DX              ; Increments DX if [SI] is not 0.
+        inc SI              ; Increment SI to move to the next.
+        loop COUNT_LOOP 
+    RESET_CX:
+        dec SI              ; Take into account terminator by decrementing once.
+        mov CX, DX          ; Move to CX the count of characters.
+        jmp SHOW_INVERT
+    SHOW_INVERT:
+        mov AL, DS:[SI]     ; Print the characters.
+        mov ES:[DI], AL
+        dec SI              ; Decrement instead of incrementing since we're going backwards.
+        add DI, 2           ; Move offset by 2 again.
+    loop SHOW_INVERT
+    jmp EXIT
