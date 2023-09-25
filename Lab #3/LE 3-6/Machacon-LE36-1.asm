@@ -151,7 +151,7 @@ SETUP_HORI:
     mov DL, 79
     int 10h
     
-    mov BH, 0100_0000b
+    mov BH, 1101_0000b
     mov CH, 6
     mov DH, 12
     mov DL, 79
@@ -190,7 +190,7 @@ SETUP_VERT:
     mov DL, 20
     int 10h
     
-    mov BH, 0100_0000b
+    mov BH, 1101_0000b
     mov CL, 20
     mov DL, 40
     int 10h
@@ -227,7 +227,7 @@ SETUP_CHECK:
     mov DL, 20
     int 10h
     
-    mov BH, 0100_0000b
+    mov BH, 1101_0000b
     mov CL, 20
     mov DL, 40
     int 10h
@@ -237,13 +237,13 @@ SETUP_CHECK:
     mov DL, 60
     int 10h 
     
-    mov BH, 0101_0000b
+    mov BH, 1001_0000b
     mov CL, 60
     mov DL, 79
     int 10h
     
     ; SECOND ROW
-    mov BH, 0101_0000b
+    mov BH, 1001_0000b
     mov CH, 6
     xor CL, CL
     mov DH, 11
@@ -255,7 +255,7 @@ SETUP_CHECK:
     mov DL, 40
     int 10h
     
-    mov BH, 0100_0000b
+    mov BH, 1101_0000b
     mov CL, 40
     mov DL, 60
     int 10h 
@@ -273,7 +273,7 @@ SETUP_CHECK:
     mov DL, 20
     int 10h
     
-    mov BH, 0101_0000b
+    mov BH, 1001_0000b
     mov CL, 20
     mov DL, 40
     int 10h
@@ -283,13 +283,13 @@ SETUP_CHECK:
     mov DL, 60
     int 10h 
     
-    mov BH, 0100_0000b
+    mov BH, 1101_0000b
     mov CL, 60
     mov DL, 79
     int 10h  
     
     ; FOURTH ROW
-    mov BH, 0100_0000b
+    mov BH, 1101_0000b
     mov CH, 18
     xor CL, CL
     mov DH, 24
@@ -301,7 +301,7 @@ SETUP_CHECK:
     mov DL, 40
     int 10h
     
-    mov BH, 0101_0000b
+    mov BH, 1001_0000b
     mov CL, 40
     mov DL, 60
     int 10h 
