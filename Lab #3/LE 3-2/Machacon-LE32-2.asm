@@ -28,10 +28,11 @@ PART_B:
     int 21h
     ret
 
-PART_C:
+PART_C: 
     mov AL, BIN_TO_USE
     aam                 ; Stores tens digit to AH, ones digit to AL 
-    add AX, 3030h       ; Adds 30h to both digits for printing
+    or AH, 30h
+    or AL, 30h
     mov DL, AH          
     mov DH, AL
     
@@ -79,4 +80,5 @@ EXIT:
     
 CHAR_TO_USE db 'A'
 NL db 10, 13, '$' 
-BIN_TO_USE db 101011b ; 43 in binary
+BIN_TO_USE db 101011b ; 43 in binary 
+ASCII_BUFFER DB 10 DUP(?)
